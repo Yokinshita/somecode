@@ -2,9 +2,12 @@ import os
 import csv
 import time
 
-with open('temp_record.csv', 'w') as f:
-    writer = csv.writer(f, delimiter=',')
-    writer.writerow(['time', 'temp', 'RAM'])
+if os.path.isfile('temp_record.csv'):
+	pass
+else:
+	with open('temp_record.csv', 'w') as f:
+    		writer = csv.writer(f, delimiter=',')
+    		writer.writerow(['time', 'temp', 'RAM'])
 
 
 # Return RAM information (unit=kb) in a list
@@ -19,7 +22,7 @@ def getRAMinfo():
         line = p.readline()
         if i == 2:
             raws = line.split()[1:4]
-            for i in range(raws):
+            for i in range(len(raws)):
                 raws[i] = int(raws[i])
             return raws[1] / raws[0]
 
@@ -45,9 +48,9 @@ def main(intermitten):
         RAMusage = getRAMinfo()
         print(RAMusage)
         time.sleep(intermitten)
-        with open('temp_record.csv', 'w+') as f:
+        with open('temp_record.csv', 'a+') as f:
             writer = csv.writer(f, delimiter=',')
-            writer.writerow([tm, cputemp, str(RAMusage + '%')])
+            writer.writerow([tm, cputemp, str(round(RAMusage,2)) + '%'])
 
 
 main(3)
