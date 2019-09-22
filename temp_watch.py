@@ -1,13 +1,14 @@
 import os
 import csv
 import time
+import sys
 
 if os.path.isfile('temp_record.csv'):
-	pass
+    pass
 else:
-	with open('temp_record.csv', 'w') as f:
-    		writer = csv.writer(f, delimiter=',')
-    		writer.writerow(['time', 'temp', 'RAM'])
+    with open('temp_record.csv', 'w') as f:
+            writer = csv.writer(f, delimiter=',')
+            writer.writerow(['time', 'temp', 'RAM'])
 
 
 # Return RAM information (unit=kb) in a list
@@ -53,4 +54,4 @@ def main(intermitten):
             writer.writerow([tm, cputemp, str(round(RAMusage,2)) + '%'])
 
 
-main(3)
+main(int(sys.argv[1]))
