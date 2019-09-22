@@ -2,6 +2,7 @@ import os
 import csv
 import time
 import sys
+from getopt import getopt
 
 if os.path.isfile('temp_record.csv'):
     pass
@@ -33,7 +34,7 @@ def getCPUtemperature():
     return (res.replace("temp=", "").replace("'C\n", ""))
 
 
-def main(intermitten):
+def main(intermitten,is_print):
     while True:
         tm = '{}.{}.{} {}:{}:{}'.format(
             time.localtime()[0],
@@ -43,15 +44,35 @@ def main(intermitten):
             time.localtime()[4],
             time.localtime()[5],
         )
-        print(tm)
         cputemp = getCPUtemperature()
-        print(cputemp)
         RAMusage = getRAMinfo()
-        print(RAMusage)
+        if is_print is True:
+            print('time {} temp {} RAMusage {} '.format(tm,cputemp,'%.0f%%'%(RAMusage*100)))
         time.sleep(intermitten)
         with open('temp_record.csv', 'a+') as f:
             writer = csv.writer(f, delimiter=',')
-            writer.writerow([tm, cputemp, str(round(RAMusage,2)) + '%'])
+            writer.writerow([tm, cputemp, '%.0f%%'%(RAMusage*100)])
 
 
-main(int(sys.argv[1]))
+if __name__=="__main__":
+    try:
+        opts,args=getopt(sys.argv[1:],'hpt:',['help'])
+    except getopt.GetoptError:
+        is_print = True
+        intermitten = 15
+        print('args not found,runs in default mode')
+        print('Commands:python temp_watch.py [-t time] [-p] ')
+    else:
+        if opts is not None:
+            is_print=True
+            intermitten=15
+        for opt in opts:
+            if opt[0] == '-p':
+                is_print = True
+            elif opt[0] == '-t':
+                intermitten = int(opt[1])
+            elif opt[0] in ('-h','--help'):
+		print('display and record Cpu tempature and RAM use percent at certain time interval')
+		print('python temp_watch.py [-p] [-t] <interval>')
+        
+    main(intermitten,is_print)
