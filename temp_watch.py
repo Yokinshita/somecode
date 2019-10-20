@@ -74,6 +74,7 @@ if __name__=="__main__":
             elif opt[0] in ('-h','--help'):
 		print('display and record Cpu tempature and RAM use percent at certain time interval')
 		print('python temp_watch.py [-p] [-t] <interval>')
+		#exit the script
 		sys.exit(0)
         
     main(intermitten,is_print)
